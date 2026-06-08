@@ -314,7 +314,9 @@ section {
 }
 table {
   width: 100%;
+  max-width: 100%;
   border-collapse: collapse;
+  table-layout: auto;
   overflow: hidden;
   border-radius: 16px;
   font-size: 14px;
@@ -380,6 +382,10 @@ pre {
   .stats, .grid, .grid.two, .flow, .module-grid { grid-template-columns: 1fr; }
   .lane-row { grid-template-columns: 1fr; }
   .lane-label { border-right: 0; border-bottom: 1px solid var(--line); }
+  table { table-layout: fixed; }
+  th, td { overflow-wrap: anywhere; word-break: break-word; }
+  code { overflow-wrap: anywhere; }
+  pre { white-space: pre-wrap; word-break: break-word; }
   td:first-child { white-space: normal; }
 }
 </style>
@@ -393,9 +399,9 @@ pre {
       <strong>campaign</strong> 把多 Agent 从“几个角色聊天”推进到工程系统：事件溯源做状态底座，Coordinator / Executor / Retriever / Reviewer / Reserve 分工协作，PolicyGate 统一治理，A2A 传输可替换，Eval + Chaos 把上线前演练变成门禁。
     </p>
     <div class="hero-actions">
-      <a class="button primary" href="campaign/README.md">查看 campaign README</a>
+      <a class="button primary" href="README.md">查看项目 README</a>
       <a class="button" href="docs/multi-agent-framework-v5.md">框架方法论文档</a>
-      <a class="button" href="index.html">返回面试资料包</a>
+      <a class="button" href="campaign/README.md">查看 campaign 模块说明</a>
     </div>
   </header>
 
@@ -689,8 +695,7 @@ pre {
       </div>
     </div>
     <div class="card">
-      <pre>cd campaign
-python -m pip install -e ".[dev]"
+      <pre>python -m pip install -e ".[dev]"
 python -m pytest -q
 python -m campaign
 python -m campaign.examples.capstone_demo
@@ -702,7 +707,7 @@ python -m campaign.examples.distributed_demo</pre>
   </section>
 
   <footer class="footer">
-    campaign · 多 Agent 战役框架架构 · <a href="index.html">返回首页</a> · <a href="campaign/README.md">README</a> · <a href="docs/SCALING.md">Scaling Notes</a>
+    campaign · Multi-Agent Command / Runtime / Rehearsal Framework · <a href="README.md">Project README</a> · <a href="campaign/README.md">Campaign README</a> · <a href="docs/SCALING.md">Scaling Notes</a>
   </footer>
 </main>
 </body>

@@ -1,5 +1,5 @@
 [project]
-name = "campaign-agent-framework"
+name = "campaign-muti-agent"
 version = "0.1.0"
 description = "Event-sourced multi-agent command/runtime/rehearsal framework with A2A transport, governance, HITL, RAG memory, and chaos evaluation."
 requires-python = ">=3.11"

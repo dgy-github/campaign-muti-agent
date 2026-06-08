@@ -1,4 +1,4 @@
-# campaign — Multi-Agent Command / Runtime / Rehearsal Framework
+# campaign-muti-agent — Multi-Agent Command / Runtime / Rehearsal Framework
 
 `campaign` is a runnable reference implementation for engineering-grade multi-agent systems.
 It is built around one idea: **an agent team should be commanded, governed, rehearsed, observed, and recovered like a production system, not treated as a loose chat room of personas.**
@@ -18,7 +18,7 @@ This is intentionally small enough to read, but complete enough to discuss serio
 
 Open the live HTML architecture view:
 
-- https://dgy-github.github.io/campaign-agent-framework/
+- https://dgy-github.github.io/campaign-muti-agent/
 
 Or open the local file:
 
@@ -93,3 +93,8 @@ Expected test result:
 - How do you turn failures into rehearsal data instead of production surprises?
 
 That is the point of the framework: **not more agents, better command.**
+
+## Repository Name
+
+The GitHub repository is intentionally named `campaign-muti-agent` to match the
+published project URL. The importable Python package remains `campaign`.
