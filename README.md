@@ -1,5 +1,7 @@
 # campaign-muti-agent — Multi-Agent Command / Runtime / Rehearsal Framework
 
+English | [简体中文](README.zh-CN.md)
+
 `campaign` is a runnable reference implementation for engineering-grade multi-agent systems.
 It is built around one idea: **an agent team should be commanded, governed, rehearsed, observed, and recovered like a production system, not treated as a loose chat room of personas.**
 
