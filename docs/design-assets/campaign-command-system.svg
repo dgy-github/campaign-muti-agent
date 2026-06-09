@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560">
+  <defs>
+    <linearGradient id="cbg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#121923"/>
+      <stop offset="1" stop-color="#1d2834"/>
+    </linearGradient>
+    <marker id="carrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d7b974"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="560" rx="34" fill="url(#cbg)"/>
+  <text x="52" y="66" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="32" font-weight="800" fill="#f2d58d">campaign Command System</text>
+  <text x="52" y="102" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="18" fill="#d9cfb8">多 Agent 不是多人聊天，而是军令、编队、治理、军报和演练组成的指挥系统</text>
+
+  <rect x="476" y="132" width="248" height="104" rx="22" fill="#2a3542" stroke="#d7b974" stroke-width="2"/>
+  <text x="524" y="176" font-size="25" font-weight="800" fill="#f2d58d" font-family="Segoe UI, Microsoft YaHei">ExecutionOrder</text>
+  <text x="526" y="208" font-size="17" fill="#fff3ce" font-family="Segoe UI, Microsoft YaHei">目标 / 约束 / 预算 / 验收</text>
+
+  <rect x="90" y="320" width="180" height="108" rx="20" fill="#202b36" stroke="#8f7847"/>
+  <text x="122" y="364" font-size="22" font-weight="800" fill="#f2d58d" font-family="Segoe UI, Microsoft YaHei">Retriever</text>
+  <text x="122" y="394" font-size="16" fill="#f5ead2" font-family="Segoe UI, Microsoft YaHei">斥候：查资料</text>
+
+  <rect x="326" y="300" width="190" height="128" rx="20" fill="#202b36" stroke="#8f7847"/>
+  <text x="358" y="344" font-size="22" font-weight="800" fill="#f2d58d" font-family="Segoe UI, Microsoft YaHei">Executor</text>
+  <text x="358" y="376" font-size="16" fill="#f5ead2" font-family="Segoe UI, Microsoft YaHei">工兵：执行动作</text>
+  <text x="358" y="402" font-size="16" fill="#f5ead2" font-family="Segoe UI, Microsoft YaHei">产出结果</text>
+
+  <rect x="572" y="286" width="210" height="142" rx="22" fill="#31404d" stroke="#d7b974" stroke-width="2"/>
+  <text x="618" y="332" font-size="24" font-weight="800" fill="#f2d58d" font-family="Segoe UI, Microsoft YaHei">Coordinator</text>
+  <text x="618" y="366" font-size="17" fill="#fff3ce" font-family="Segoe UI, Microsoft YaHei">中军：拆任务</text>
+  <text x="618" y="392" font-size="17" fill="#fff3ce" font-family="Segoe UI, Microsoft YaHei">调度角色</text>
+
+  <rect x="838" y="300" width="184" height="128" rx="20" fill="#202b36" stroke="#8f7847"/>
+  <text x="872" y="344" font-size="22" font-weight="800" fill="#f2d58d" font-family="Segoe UI, Microsoft YaHei">Reviewer</text>
+  <text x="872" y="376" font-size="16" fill="#f5ead2" font-family="Segoe UI, Microsoft YaHei">督军：独立复核</text>
+  <text x="872" y="402" font-size="16" fill="#f5ead2" font-family="Segoe UI, Microsoft YaHei">防止自证正确</text>
+
+  <rect x="1070" y="320" width="90" height="108" rx="20" fill="#202b36" stroke="#8f7847"/>
+  <text x="1090" y="364" font-size="20" font-weight="800" fill="#f2d58d" font-family="Segoe UI, Microsoft YaHei">Reserve</text>
+  <text x="1090" y="394" font-size="15" fill="#f5ead2" font-family="Segoe UI, Microsoft YaHei">接管</text>
+
+  <path d="M 600 244 L 666 278" stroke="#d7b974" stroke-width="4" marker-end="url(#carrow)"/>
+  <path d="M 570 356 L 284 372" stroke="#d7b974" stroke-width="4" marker-end="url(#carrow)"/>
+  <path d="M 570 366 L 530 366" stroke="#d7b974" stroke-width="4" marker-end="url(#carrow)"/>
+  <path d="M 784 366 L 826 366" stroke="#d7b974" stroke-width="4" marker-end="url(#carrow)"/>
+  <path d="M 1028 374 L 1060 374" stroke="#d7b974" stroke-width="4" marker-end="url(#carrow)"/>
+
+  <rect x="310" y="468" width="580" height="48" rx="16" fill="#111821" stroke="#d7b974"/>
+  <text x="366" y="500" font-size="18" fill="#f2d58d" font-family="Segoe UI, Microsoft YaHei">所有状态写入 EventLog，所有高风险动作先过 PolicyGate</text>
+</svg>

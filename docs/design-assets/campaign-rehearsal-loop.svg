@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520">
+  <defs>
+    <linearGradient id="rbg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#fff8e8"/>
+      <stop offset="1" stop-color="#f0f7f1"/>
+    </linearGradient>
+    <marker id="rarrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#a76513"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="520" rx="34" fill="url(#rbg)"/>
+  <text x="52" y="66" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="32" font-weight="800" fill="#7a5312">Rehearsal / Regression Loop</text>
+  <text x="52" y="102" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="18" fill="#665a43">上线前演练，线上坏例回流，避免多 Agent 系统靠感觉调参</text>
+
+  <circle cx="600" cy="286" r="104" fill="#ffffff" stroke="#d7b974" stroke-width="4"/>
+  <text x="535" y="276" font-size="24" font-weight="800" fill="#7a5312" font-family="Segoe UI, Microsoft YaHei">EventLog</text>
+  <text x="506" y="310" font-size="17" fill="#2d332d" font-family="Segoe UI, Microsoft YaHei">trace / replay / audit</text>
+
+  <rect x="108" y="194" width="210" height="108" rx="22" fill="#ffffff" stroke="#d7b974" stroke-width="2"/>
+  <text x="142" y="238" font-size="23" font-weight="800" fill="#7a5312" font-family="Segoe UI, Microsoft YaHei">Golden Cases</text>
+  <text x="142" y="270" font-size="16" fill="#2d332d" font-family="Segoe UI, Microsoft YaHei">高频 / 边界 / 多跳</text>
+
+  <rect x="388" y="88" width="210" height="108" rx="22" fill="#ffffff" stroke="#d7b974" stroke-width="2"/>
+  <text x="422" y="132" font-size="23" font-weight="800" fill="#7a5312" font-family="Segoe UI, Microsoft YaHei">EvalHarness</text>
+  <text x="422" y="164" font-size="16" fill="#2d332d" font-family="Segoe UI, Microsoft YaHei">assertion + judge</text>
+
+  <rect x="720" y="88" width="210" height="108" rx="22" fill="#ffffff" stroke="#d7b974" stroke-width="2"/>
+  <text x="754" y="132" font-size="23" font-weight="800" fill="#7a5312" font-family="Segoe UI, Microsoft YaHei">ChaosDrill</text>
+  <text x="754" y="164" font-size="16" fill="#2d332d" font-family="Segoe UI, Microsoft YaHei">工具失败 / 超预算</text>
+
+  <rect x="882" y="336" width="210" height="108" rx="22" fill="#ffffff" stroke="#d7b974" stroke-width="2"/>
+  <text x="916" y="380" font-size="23" font-weight="800" fill="#7a5312" font-family="Segoe UI, Microsoft YaHei">Badcase</text>
+  <text x="916" y="412" font-size="16" fill="#2d332d" font-family="Segoe UI, Microsoft YaHei">线上问题回流</text>
+
+  <path d="M 320 220 C 356 170, 364 150, 380 144" stroke="#a76513" stroke-width="5" fill="none" marker-end="url(#rarrow)"/>
+  <path d="M 604 142 L 706 142" stroke="#a76513" stroke-width="5" marker-end="url(#rarrow)"/>
+  <path d="M 836 202 C 808 250, 752 274, 710 282" stroke="#a76513" stroke-width="5" fill="none" marker-end="url(#rarrow)"/>
+  <path d="M 696 346 C 760 390, 812 398, 872 392" stroke="#a76513" stroke-width="5" fill="none" marker-end="url(#rarrow)"/>
+  <path d="M 882 392 C 630 484, 260 420, 210 312" stroke="#a76513" stroke-width="5" fill="none" stroke-dasharray="10 8" marker-end="url(#rarrow)"/>
+</svg>

@@ -21,6 +21,7 @@ This is intentionally small enough to read, but complete enough to discuss serio
 Open the live HTML architecture view:
 
 - https://dgy-github.github.io/campaign-muti-agent/
+- [Design brief PDF](docs/campaign-multi-agent-design-brief.pdf) · [Design brief HTML](docs/campaign-multi-agent-design-brief.html)
 
 Or open the local file:
 

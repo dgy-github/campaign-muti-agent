@@ -20,6 +20,7 @@
 在线 HTML 架构页：
 
 - https://dgy-github.github.io/campaign-muti-agent/
+- [设计说明 PDF](docs/campaign-multi-agent-design-brief.pdf) · [设计说明 HTML](docs/campaign-multi-agent-design-brief.html)
 
 本地文件：
 

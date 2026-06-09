@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multi-Agent 框架设计思路 · campaign</title>
+<style>
+:root {
+  --bg: #0c1117;
+  --panel: rgba(19, 28, 38, 0.9);
+  --panel-2: rgba(29, 40, 52, 0.82);
+  --line: rgba(215, 185, 116, 0.24);
+  --text: #f4ead4;
+  --muted: #c1b79f;
+  --gold: #d7b974;
+  --red: #c45b4b;
+  --blue: #78b7d4;
+  --green: #79c990;
+  --ink: #11151a;
+  --mono: "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+  --sans: "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  color: var(--text);
+  font-family: var(--sans);
+  line-height: 1.72;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(215,185,116,0.18), transparent 26rem),
+    radial-gradient(circle at 82% 18%, rgba(120,183,212,0.14), transparent 30rem),
+    linear-gradient(180deg, #090d12, var(--bg) 52%, #07090c);
+}
+.page {
+  width: min(1160px, calc(100% - 36px));
+  margin: 0 auto;
+  padding: 38px 0 74px;
+}
+.hero {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 30px;
+  padding: 46px;
+  background:
+    linear-gradient(145deg, rgba(215,185,116,0.18), rgba(120,183,212,0.08) 46%, rgba(19,28,38,0.92)),
+    var(--panel);
+  box-shadow: 0 32px 90px rgba(0,0,0,0.38);
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: -42%;
+  background:
+    linear-gradient(rgba(215,185,116,0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(215,185,116,0.055) 1px, transparent 1px);
+  background-size: 42px 42px;
+  transform: rotate(-8deg);
+  mask-image: radial-gradient(circle at 50% 42%, #000, transparent 64%);
+}
+.hero > * { position: relative; z-index: 1; }
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(215,185,116,0.36);
+  border-radius: 999px;
+  padding: 6px 12px;
+  color: var(--gold);
+  background: rgba(215,185,116,0.08);
+  font-family: var(--mono);
+  font-size: 13px;
+}
+h1 {
+  margin: 18px 0 14px;
+  max-width: 980px;
+  font-size: clamp(38px, 6.4vw, 74px);
+  line-height: 1;
+  letter-spacing: -0.06em;
+}
+.lead {
+  max-width: 980px;
+  color: #e3dac5;
+  font-size: 18px;
+}
+.banner {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+.banner div {
+  min-height: 92px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  padding: 14px;
+  background: rgba(7, 9, 12, 0.36);
+}
+.banner b {
+  display: block;
+  color: var(--gold);
+  font-size: 18px;
+}
+section {
+  margin-top: 22px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: rgba(19, 28, 38, 0.86);
+  padding: 28px;
+}
+h2 {
+  margin: 0 0 14px;
+  font-size: 28px;
+  letter-spacing: -0.035em;
+}
+h3 {
+  margin: 20px 0 8px;
+  color: var(--gold);
+  font-size: 18px;
+}
+p { margin: 8px 0; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.card {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 18px;
+  background: rgba(255,255,255,0.045);
+}
+.card strong { color: #fff; }
+.tag {
+  display: inline-flex;
+  margin: 4px 6px 2px 0;
+  padding: 3px 8px;
+  border-radius: 999px;
+  color: #e8f6ff;
+  background: rgba(120,183,212,0.12);
+  border: 1px solid rgba(120,183,212,0.24);
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.quote {
+  border-left: 5px solid var(--gold);
+  background: rgba(215,185,116,0.09);
+  padding: 13px 16px;
+  border-radius: 12px;
+  font-weight: 800;
+}
+.map {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  margin-top: 16px;
+}
+.node {
+  border-radius: 16px;
+  border: 1px solid rgba(215,185,116,0.28);
+  padding: 14px;
+  min-height: 118px;
+  background: linear-gradient(180deg, rgba(215,185,116,0.10), rgba(255,255,255,0.04));
+}
+.node b { display: block; color: var(--gold); }
+.diagram {
+  margin: 18px 0 22px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  padding: 20px;
+  background:
+    linear-gradient(90deg, rgba(215,185,116,0.10), transparent),
+    rgba(255,255,255,0.04);
+}
+.arch-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  margin: 18px 0 22px;
+  background: #fff;
+}
+.diagram-title {
+  margin-bottom: 14px;
+  color: var(--gold);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+.pipeline {
+  display: grid;
+  grid-template-columns: 1fr 36px 1fr 36px 1fr 36px 1fr;
+  align-items: stretch;
+  gap: 8px;
+}
+.box {
+  border: 1px solid rgba(215,185,116,0.28);
+  border-radius: 18px;
+  padding: 14px;
+  background: rgba(7,9,12,0.38);
+  min-height: 96px;
+}
+.box b {
+  display: block;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+.arrow {
+  display: grid;
+  place-items: center;
+  color: var(--gold);
+  font-weight: 900;
+  font-size: 24px;
+}
+.formation {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1fr 1fr 1fr;
+  gap: 10px;
+}
+.formation .box:first-child {
+  background: rgba(215,185,116,0.13);
+}
+.cycle {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+}
+.compare-table th,
+.compare-table td {
+  border: 1px solid rgba(215,185,116,0.22);
+  padding: 13px 14px;
+  vertical-align: top;
+  text-align: left;
+}
+.compare-table th {
+  color: var(--gold);
+  background: rgba(215,185,116,0.10);
+}
+.compare-table td {
+  background: rgba(255,255,255,0.035);
+}
+.compare-table b {
+  color: #fff3ce;
+}
+ul { margin: 8px 0 0; padding-left: 20px; }
+li { margin: 6px 0; }
+pre, code { font-family: var(--mono); }
+pre {
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 16px;
+  background: #07090c;
+  color: #f7e8bd;
+  line-height: 1.55;
+}
+.source {
+  color: var(--muted);
+  font-size: 12px;
+}
+.source a { color: #9cd8f2; word-break: break-all; }
+.footer {
+  color: var(--muted);
+  font-size: 13px;
+}
+@media print {
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  @page {
+    margin: 10mm;
+  }
+  body {
+    background: #ffffff !important;
+    color: #111;
+  }
+  .page {
+    width: auto;
+    padding: 0;
+  }
+  .hero::before {
+    display: none;
+  }
+  .hero,
+  section {
+    background: #ffffff !important;
+    color: #111 !important;
+    box-shadow: none;
+    break-inside: auto;
+    border-color: #d7c79f;
+  }
+  .card,
+  .node,
+  .banner div {
+    background: #ffffff !important;
+    color: #111 !important;
+    break-inside: auto;
+    border-color: #ddcfaa;
+  }
+  .banner,
+  .grid,
+  .map,
+  .pipeline,
+  .formation,
+  .cycle {
+    display: block !important;
+  }
+  .card,
+  .node,
+  .banner div,
+  .box {
+    margin: 0 0 10px !important;
+    min-height: 0 !important;
+  }
+  .arrow {
+    display: none;
+  }
+  .arch-img {
+    break-inside: avoid;
+  }
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+  .hero *,
+  section *,
+  .card *,
+  .node *,
+  .banner div * {
+    color: #111 !important;
+  }
+  .lead,
+  .footer,
+  .source,
+  .source a {
+    color: #444 !important;
+  }
+  .card strong,
+  .node b,
+  .banner b,
+  h2,
+  h3 {
+    color: #7a5312 !important;
+  }
+  .tag {
+    color: #17455a !important;
+    background: #eef8fc !important;
+    border-color: #bddceb !important;
+  }
+  .quote {
+    color: #111 !important;
+    background: #fff8e8 !important;
+  }
+  pre {
+    color: #111 !important;
+    background: #f7f2e7 !important;
+    white-space: pre-wrap;
+  }
+  .compare-table,
+  .compare-table th,
+  .compare-table td {
+    color: #111 !important;
+    background: #fff !important;
+    border-color: #d7c79f !important;
+  }
+  .compare-table b,
+  .compare-table th {
+    color: #7a5312 !important;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+@media (max-width: 900px) {
+  .banner, .grid, .map { grid-template-columns: 1fr; }
+  .hero { padding: 30px; }
+}
+</style>
+</head>
+<body>
+<main class="page">
+  <header class="hero">
+    <div class="eyebrow">campaign-muti-agent · Command / Runtime / Rehearsal</div>
+    <h1>Multi-Agent 不是多人聊天，而是一套可指挥、可治理、可演练的作战系统</h1>
+    <p class="lead">
+      campaign 的核心思想是：多 Agent 系统不能只靠“角色 prompt”拼起来，而要像组织一支可控队伍一样，把目标、角色、授权、通信、审计、复盘和演练都工程化。它用 Coordinator / Executor / Retriever / Reviewer / Reserve 等角色，把 Agent 协作变成可测试的 runtime。
+    </p>
+    <div class="banner">
+      <div><b>Command</b>目标、约束、预算、验收标准</div>
+      <div><b>Formation</b>角色分工与能力路由</div>
+      <div><b>Protocol</b>A2A 消息与远程代理</div>
+      <div><b>Governance</b>权限、预算、数据外泄检查</div>
+      <div><b>Rehearsal</b>Eval Harness 与 Chaos Drill</div>
+    </div>
+  </header>
+
+  <section>
+    <h2>一、原始思考：从“将兵”到“Agent 编队”</h2>
+    <p class="quote">孙子兵法里讲“道、天、地、将、法”，放到 Agent 系统里，就是目标一致、环境约束、工具地形、角色能力和制度流程。</p>
+    <div class="grid">
+      <div class="card">
+        <h3>为什么不是一个大 Agent</h3>
+        <p>一个大 Agent 什么都做，短期看简单，长期会失控：上下文膨胀、职责混杂、错误难定位、权限难隔离。真实系统更像军队组织，不同兵种负责侦察、执行、复核、预备和指挥。</p>
+      </div>
+      <div class="card">
+        <h3>为什么也不是一堆 persona</h3>
+        <p>多 Agent 如果只是“你是产品经理、你是程序员、你是测试”这种角色扮演，本质还是聊天。工程化多 Agent 必须有明确协议、事件日志、状态机、预算、权限和验收标准。</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>二、指挥体系映射</h2>
+    <img class="arch-img" src="design-assets/campaign-command-system.svg" alt="campaign multi-agent command system architecture diagram">
+    <div class="diagram">
+      <div class="diagram-title">图 1：Agent 编队不是角色堆叠，而是指挥链</div>
+      <div class="formation">
+        <div class="box"><b>ExecutionOrder</b>军令：目标、约束、预算、验收标准。</div>
+        <div class="box"><b>Coordinator</b>中军：拆解任务，调度队伍。</div>
+        <div class="box"><b>Retriever</b>斥候：查资料，补证据。</div>
+        <div class="box"><b>Executor</b>工兵：执行动作，产出结果。</div>
+        <div class="box"><b>Reviewer / Reserve</b>督军与预备队：复核、降级、接管。</div>
+      </div>
+    </div>
+    <div class="map">
+      <div class="node"><b>军令</b>ExecutionOrder：目标、约束、预算、验收条件。</div>
+      <div class="node"><b>中军</b>Coordinator：拆解任务、调度角色、控制节奏。</div>
+      <div class="node"><b>斥候</b>Retriever：查资料、取上下文、补证据。</div>
+      <div class="node"><b>工兵</b>Executor：执行具体动作，产出可验证结果。</div>
+      <div class="node"><b>督军</b>Reviewer：独立复核，防止执行者自证正确。</div>
+      <div class="node"><b>预备队</b>Reserve：主力失败时接管、降级、重试。</div>
+    </div>
+    <pre>ExecutionOrder
+  -> Coordinator creates Tasks
+  -> Router assigns capable agents
+  -> Agents communicate by A2A Message
+  -> PolicyGate checks authority / budget / egress
+  -> EventLog records every state transition
+  -> Reviewer validates output
+  -> EvalHarness / ChaosDrill rehearses failure modes</pre>
+  </section>
+
+  <section>
+    <h2>三、工程架构</h2>
+    <div class="diagram">
+      <div class="diagram-title">图 2：A2A 协作与治理链路</div>
+      <div class="pipeline">
+        <div class="box"><b>Command</b>ExecutionOrder 定义目标、技能、预算和验收。</div>
+        <div class="arrow">→</div>
+        <div class="box"><b>A2A Message</b>所有 agent 通过统一 envelope 通信。</div>
+        <div class="arrow">→</div>
+        <div class="box"><b>PolicyGate</b>权限、预算、数据外泄、注入风险检查。</div>
+        <div class="arrow">→</div>
+        <div class="box"><b>EventLog</b>只追加事件，状态由 replay 得出。</div>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>Command Layer</h3>
+        <p>用 <strong>ExecutionOrder</strong> 和 <strong>Task</strong> 把自然语言目标变成可执行命令：objective、constraints、skills、budget、acceptance criteria 都要显式化。</p>
+        <span class="tag">ExecutionOrder</span><span class="tag">Task</span><span class="tag">Acceptance Criteria</span>
+      </div>
+      <div class="card">
+        <h3>Runtime Layer</h3>
+        <p>Coordinator / Executor / Retriever / Reviewer / Reserve 通过显式 A2A message 协作。状态来自事件回放，而不是隐藏全局变量。</p>
+        <span class="tag">Coordinator</span><span class="tag">Executor</span><span class="tag">Reviewer</span>
+      </div>
+      <div class="card">
+        <h3>Governance Layer</h3>
+        <p>PolicyGate 负责预算、权限、数据外泄、prompt injection 检查。危险动作先治理，再执行，不把风险交给模型自觉。</p>
+        <span class="tag">PolicyGate</span><span class="tag">Budget</span><span class="tag">Authority</span>
+      </div>
+      <div class="card">
+        <h3>Event-Sourced State</h3>
+        <p>EventLog 只追加，不覆盖。系统状态由 run_id 范围内的事件 replay 得出，方便审计、恢复、回放和问题定位。</p>
+        <span class="tag">EventLog</span><span class="tag">Replay</span><span class="tag">run_id</span>
+      </div>
+      <div class="card">
+        <h3>A2A Transport</h3>
+        <p>本地 agent 和远程 agent 都走统一 Message envelope。支持 in-process、HTTP JSON-RPC、SSE、capability discovery 和 remote proxy。</p>
+        <span class="tag">A2A</span><span class="tag">JSON-RPC</span><span class="tag">SSE</span>
+      </div>
+      <div class="card">
+        <h3>Rehearsal Layer</h3>
+        <p>上线前不靠感觉，而是通过 EvalHarness 和 ChaosDrill 演练失败：超预算、工具失败、review 拒绝、远程 agent 不可用、权限违规。</p>
+        <span class="tag">EvalHarness</span><span class="tag">ChaosDrill</span><span class="tag">Regression</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>四、论文思想映射</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>ReAct：行动前后都有观察</h3>
+        <p>单个 Agent 内部仍然遵循 reasoning / action / observation 循环；campaign 把这个循环扩展到团队级调度和事件日志。</p>
+        <p class="source">Reference: <a href="https://arxiv.org/abs/2210.03629">ReAct: Synergizing Reasoning and Acting in Language Models</a></p>
+      </div>
+      <div class="card">
+        <h3>Toolformer：工具成为模型能力边界</h3>
+        <p>每个 agent 的能力不是口头声明，而是由可调用工具、权限、预算和协议决定。工具越清晰，角色边界越清晰。</p>
+        <p class="source">Reference: <a href="https://arxiv.org/abs/2302.04761">Toolformer: Language Models Can Teach Themselves to Use Tools</a></p>
+      </div>
+      <div class="card">
+        <h3>Reflexion：失败进入复盘系统</h3>
+        <p>campaign 的 EvalHarness / ChaosDrill 把失败变成可复现演练，而不是一次性报错。复盘结果回到策略、规则和回归用例。</p>
+        <p class="source">Reference: <a href="https://arxiv.org/abs/2303.11366">Reflexion: Language Agents with Verbal Reinforcement Learning</a></p>
+      </div>
+      <div class="card">
+        <h3>Voyager：技能库和长期积累</h3>
+        <p>多 Agent 不是每次从零开始，而是通过 skill registry、memory、knowledge store 积累能力，形成可复用兵种。</p>
+        <p class="source">Reference: <a href="https://arxiv.org/abs/2305.16291">Voyager: An Open-Ended Embodied Agent with Large Language Models</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>五、为什么这个设计更“生产级”</h2>
+    <img class="arch-img" src="design-assets/campaign-rehearsal-loop.svg" alt="campaign rehearsal and regression loop diagram">
+    <div class="diagram">
+      <div class="diagram-title">图 3：上线前演练与失败回流</div>
+      <div class="cycle">
+        <div class="box"><b>Golden Cases</b>正常、高频、边界、多跳、危险操作。</div>
+        <div class="box"><b>EvalHarness</b>规则断言 + judge + trace 检查。</div>
+        <div class="box"><b>ChaosDrill</b>工具失败、超预算、远程 agent 不可用。</div>
+        <div class="box"><b>Regression</b>badcase 回流，策略和规则再验证。</div>
+      </div>
+    </div>
+    <ul>
+      <li><b>有命令，不只是聊天：</b>ExecutionOrder 明确目标、预算、约束和验收标准。</li>
+      <li><b>有编队，不只是角色名：</b>Coordinator、Retriever、Executor、Reviewer、Reserve 形成职责隔离。</li>
+      <li><b>有军法，不靠自觉：</b>PolicyGate 对权限、预算、数据外泄和 prompt injection 做拦截。</li>
+      <li><b>有军报，不怕追责：</b>EventLog 记录每一步，trace 可以回放。</li>
+      <li><b>有演习，不靠上线撞：</b>EvalHarness 和 ChaosDrill 把失败场景前置。</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>六、与常见 Multi-Agent 框架的取向对比</h2>
+    <p class="quote">campaign 的定位不是替代 LangGraph / AutoGen / CrewAI，而是验证“生产级 Multi-Agent runtime”需要哪些治理、审计和演练机制。</p>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>维度</th>
+          <th>常见框架常见取向</th>
+          <th>campaign 的设计取向</th>
+          <th>优势</th>
+          <th>代价 / 不足</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>任务入口</b></td>
+          <td>通常从 role prompt 或 workflow node 开始。</td>
+          <td>先定义 <b>ExecutionOrder</b>：目标、约束、预算、验收标准。</td>
+          <td>任务边界更清楚，不容易变成多角色闲聊。</td>
+          <td>比简单 demo 更重，上手需要理解命令模型。</td>
+        </tr>
+        <tr>
+          <td><b>状态管理</b></td>
+          <td>多依赖当前状态、聊天历史或框架内部状态。</td>
+          <td><b>EventLog append-only</b>，状态由 replay 推导。</td>
+          <td>更适合 trace、审计、恢复和问题复盘。</td>
+          <td>事件模型需要额外设计，开发成本更高。</td>
+        </tr>
+        <tr>
+          <td><b>角色分工</b></td>
+          <td>角色多由 prompt 描述，执行和判断容易混在一起。</td>
+          <td>Coordinator / Retriever / Executor / Reviewer / Reserve 分离。</td>
+          <td>执行者和复核者分离，避免模型自证正确。</td>
+          <td>流程更长，简单任务可能显得过度设计。</td>
+        </tr>
+        <tr>
+          <td><b>治理边界</b></td>
+          <td>安全常靠 prompt 约束或外部业务代码补。</td>
+          <td><b>PolicyGate</b> 把权限、预算、数据外泄、注入风险前置。</td>
+          <td>高风险操作更可控，更适合企业系统。</td>
+          <td>策略规则需要持续维护，不能完全靠模型自动化。</td>
+        </tr>
+        <tr>
+          <td><b>失败处理</b></td>
+          <td>更关注 happy path demo 和快速编排。</td>
+          <td><b>EvalHarness + ChaosDrill</b> 主动演练失败模式。</td>
+          <td>能把线上坏例变成回归资产，提升可验证性。</td>
+          <td>真实大规模生产验证还需要更多案例沉淀。</td>
+        </tr>
+        <tr>
+          <td><b>生态成熟度</b></td>
+          <td>LangGraph / AutoGen / CrewAI 生态、教程和集成更丰富。</td>
+          <td>小而完整的参考实现，重点在 runtime 机制。</td>
+          <td>代码可读，便于讲清楚工程机制和取舍。</td>
+          <td>生态、连接器、社区案例不如成熟框架。</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>七、项目地址</h2>
+    <p>GitHub: https://github.com/dgy-github/campaign-muti-agent</p>
+    <p>展示页: https://dgy-github.github.io/campaign-muti-agent/</p>
+    <p class="footer">Generated for DeepSeek / AI Agent / LLM 应用工程师面试材料。</p>
+  </section>
+</main>
+</body>
+</html>
